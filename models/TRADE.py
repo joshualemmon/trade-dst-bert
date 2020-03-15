@@ -6,6 +6,7 @@ from torch import optim
 import torch.nn.functional as F
 import random
 import numpy as np
+import transformers
 
 # import matplotlib.pyplot as plt
 # import seaborn  as sns
@@ -21,12 +22,13 @@ from utils.config import *
 import pprint
 
 class TRADE(nn.Module):
-    def __init__(self, hidden_size, lang, path, task, lr, dropout, slots, gating_dict, nb_train_vocab=0):
+    def __init__(self, hidden_size, lang, path, task, lr, dropout, slots, gating_dict, nb_train_vocab=0, encoder='GRU'):
         super(TRADE, self).__init__()
         self.name = "TRADE"
         self.task = task
         self.hidden_size = hidden_size    
         self.lang = lang[0]
+        # print('sdasdasdadadasdas\n\n\n\n',self.lang.word2index)
         self.mem_lang = lang[1] 
         self.lr = lr 
         self.dropout = dropout
@@ -36,7 +38,10 @@ class TRADE(nn.Module):
         self.nb_gate = len(gating_dict)
         self.cross_entorpy = nn.CrossEntropyLoss()
 
-        self.encoder = EncoderRNN(self.lang.n_words, hidden_size, self.dropout)
+        if encoder == 'GRU':
+            self.encoder = EncoderRNN(self.lang.n_words, hidden_size, self.dropout)
+        elif encoder == 'BERT':
+            self.encoder = EncoderBERT(self.lang.n_words, hidden_size, self.dropout)
         self.decoder = Generator(self.lang, self.encoder.embedding, self.lang.n_words, hidden_size, self.dropout, self.slots, self.nb_gate) 
         
         if path:
@@ -130,10 +135,8 @@ class TRADE(nn.Module):
             story = data['context'] * rand_mask.long()
         else:
             story = data['context']
-
         # Encode dialog history
         encoded_outputs, encoded_hidden = self.encoder(story.transpose(0, 1), data['context_len'])
-
         # Get the words that can be copy from the memory
         batch_size = len(data['context_len'])
         self.copy_list = data['context_plain']
@@ -287,6 +290,39 @@ class TRADE(nn.Module):
                 precision, recall, F1, count = 0, 0, 0, 1
         return F1, recall, precision, count
 
+class EncoderBERT(nn.Module):
+    def __init__(self, vocab_size, hidden_size, dropout, n_layers=1, vocab_file='./data/vocab.txt'):
+        super(EncoderBERT, self).__init__()
+        self.vocab_size = vocab_size
+        self.hidden_size = hidden_size
+        self.dropout = dropout
+        self.embedding = nn.Embedding(vocab_size, hidden_size, padding_idx=PAD_token)
+        self.config = transformers.BertConfig(vocab_size=self.vocab_size, hidden_size=self.hidden_size, 
+                                              hidden_dropout_prob=dropout, attention_probs_dropout=dropout,
+                                              num_attention_heads=16, output_hidden_states=True, max_position_embeddings=1024)
+        self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased")
+        self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased", config=self.config)
+        # self.BERT.set_input_embeddings(self.embedding)
+
+    def get_state(self, bsz):
+        """Get cell states and hidden states."""
+        if USE_CUDA:
+            return Variable(torch.zeros(2, bsz, self.hidden_size)).cuda()
+        else:
+            return Variable(torch.zeros(2, bsz, self.hidden_size))
+
+    def forward(self, input_seqs, input_lengths, hidden=None):
+        input_seqs = input_seqs.transpose(0,1)
+        # inp_ids = []
+        # for seq in input_seqs:
+        #     inp_ids.append(self.tokenizer.encode(seq))
+        # hidden = self.get_state(input_seqs.size(1))
+        # print(input_seqs.shape)
+        output = self.BERT(input_ids=input_seqs)
+        outputs = output[0]
+        hidden = output[1]
+        # outputs = outputs[:,:,:self.hidden_size] + outputs[:,:,self.hidden_size:]
+        return outputs, hidden.unsqueeze(0)
 
 class EncoderRNN(nn.Module):
     def __init__(self, vocab_size, hidden_size, dropout, n_layers=1):

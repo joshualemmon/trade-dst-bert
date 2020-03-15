@@ -30,7 +30,8 @@ model = globals()[args['decoder']](
     dropout=float(args['drop']),
     slots=SLOTS_LIST,
     gating_dict=gating_dict, 
-    nb_train_vocab=max_word)
+    nb_train_vocab=max_word,
+    encoder=str(args['encoder']))
 
 # print("[Info] Slots include ", SLOTS_LIST)
 # print("[Info] Unpointable Slots include ", gating_dict)

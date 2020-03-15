@@ -53,6 +53,7 @@ parser.add_argument('-dr','--drop', help='Drop Out', required=False, type=float)
 parser.add_argument('-lm','--limit', help='Word Limit', required=False,default=-10000)
 parser.add_argument('-clip','--clip', help='gradient clipping', required=False, default=10, type=int) 
 parser.add_argument('-tfr','--teacher_forcing_ratio', help='teacher_forcing_ratio', type=float, required=False, default=0.5)
+parser.add_argument('-enc', '--encoder', required=False, type=str, default='GRU')
 # parser.add_argument('-l','--layer', help='Layer Number', required=False)
 
 # Unseen Domain Setting
