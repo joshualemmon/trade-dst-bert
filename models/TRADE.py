@@ -298,6 +298,7 @@ class EncoderBERT(nn.Module):
         self.dropout = dropout
         self.dropout_layer = nn.Dropout(dropout)
         self.embedding = nn.Embedding(vocab_size, hidden_size, padding_idx=PAD_token)
+        self.embedding.weight.data.normal_(0, 0.1)
         self.config = transformers.BertConfig.from_pretrained('bert-base-uncased', output_hidden_states=True)
         self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased", bos_token="SOS", eos_token="EOS", unk_token="UNK", pad_token="PAD")
         self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased", config=self.config)
