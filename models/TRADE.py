@@ -320,6 +320,7 @@ class EncoderBERT(nn.Module):
         # print(len(output))
         outputs = output[0]
         hidden = output[2]
+        print(hidden)
         return outputs.transpose(0,1), hidden.unsqueeze(0)
 
 class EncoderRNN(nn.Module):
