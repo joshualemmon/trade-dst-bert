@@ -317,9 +317,9 @@ class EncoderBERT(nn.Module):
         embedded = self.embedding(input_seqs)
         embedded = self.dropout_layer(embedded)
         output = self.BERT(inputs_embeds=embedded)
-        print(len(output))
+        # print(len(output))
         outputs = output[0]
-        hidden = output[1]
+        hidden = output[2]
         return outputs.transpose(0,1), hidden.unsqueeze(0)
 
 class EncoderRNN(nn.Module):
