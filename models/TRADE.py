@@ -320,7 +320,7 @@ class EncoderBERT(nn.Module):
         # print(len(output))
         outputs = output[0]
         hidden_states = output[2]
-        hidden = torch.zeros_like(hidden_states[0].)
+        hidden = torch.zeros_like(hidden_states[0])
         for hs in hidden_states:
             hidden += hs
         return outputs.transpose(0,1), hidden.unsqueeze(0)
