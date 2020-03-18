@@ -319,9 +319,10 @@ class EncoderBERT(nn.Module):
         output = self.BERT(inputs_embeds=embedded)
         # print(len(output))
         outputs = output[0]
-        hidden = output[2]
-        print(len(hidden))
-        print(hidden[0].size())
+        hidden_states = output[2]
+        hidden = torch.zeros_like(hidden_states[0].)
+        for hs in hidden_states:
+            hidden += hs
         return outputs.transpose(0,1), hidden.unsqueeze(0)
 
 class EncoderRNN(nn.Module):
