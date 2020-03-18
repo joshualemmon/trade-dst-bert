@@ -137,8 +137,6 @@ class TRADE(nn.Module):
             story = data['context']
         # Encode dialog history
         encoded_outputs, encoded_hidden = self.encoder(story.transpose(0, 1), data['context_len'])
-        print(encoded_outputs.size())
-        print(encoded_hidden.size())
         # Get the words that can be copy from the memory
         batch_size = len(data['context_len'])
         self.copy_list = data['context_plain']
@@ -313,11 +311,9 @@ class EncoderBERT(nn.Module):
             return Variable(torch.zeros(2, bsz, self.hidden_size))
 
     def forward(self, input_seqs, input_lengths, hidden=None):
-        # input_seqs = input_seqs.transpose(0,1)
         embedded = self.embedding(input_seqs)
         embedded = self.dropout_layer(embedded)
         output = self.BERT(inputs_embeds=embedded)
-        # print(len(output))
         outputs = output[0]
         hidden_states = output[2]
         hidden = torch.zeros_like(hidden_states[0])
