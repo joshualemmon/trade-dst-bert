@@ -309,8 +309,10 @@ class EncoderBERT(nn.Module):
             return Variable(torch.zeros(2, bsz, self.hidden_size))
 
     def forward(self, input_seqs, input_lengths, hidden=None):
-        input_seqs = input_seqs.transpose(0,1)
-        output = self.BERT(input_ids=input_seqs)
+        # input_seqs = input_seqs.transpose(0,1)
+        embedded = self.embedding(input_seqs)
+        embedded = self.dropout_layer(embedded)
+        output = self.BERT(input_embeds=embedded)
         outputs = output[0]
         hidden = output[1]
         return outputs.squeeze(0), hidden.unsqueeze(0)
