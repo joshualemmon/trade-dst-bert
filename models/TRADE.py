@@ -297,14 +297,10 @@ class EncoderBERT(nn.Module):
         self.hidden_size = hidden_size
         self.dropout = dropout
         self.embedding = nn.Embedding(vocab_size, hidden_size, padding_idx=PAD_token)
-        # self.config = transformers.BertConfig(vocab_size=self.vocab_size, hidden_size=self.hidden_size, 
-        #                                       num_hidden_layers=n_layers, hidden_dropout_prob=dropout, attention_probs_dropout=dropout,
-        #                                       num_attention_heads=16, output_hidden_states=True, max_position_embeddings=1024)
-        # self.tokenizer = transformers.BertTokenizer(vocab_file, pad_token='PAD', unk_token='UNK', sep_token='EOS')
-        # self.BERT = transformers.BertModel(self.config)
+        self.config = transformers.BertConfig.from_pretrained('bert-base-uncased', output_hidden_states=True)
         self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased")
-        self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased")
-        self.embed_resize = nn.Linear(768, 400)
+        self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased", config=self.config)
+        # self.embed_resize = nn.Linear(768, 400)
         # self.BERT.set_input_embeddings(self.embedding)
 
     def get_state(self, bsz):
@@ -322,7 +318,7 @@ class EncoderBERT(nn.Module):
         # hidden = self.get_state(input_seqs.size(1))
         # print(input_seqs.shape)
         output = self.BERT(input_ids=input_seqs)
-        outputs = self.embed_resize(output[0])
+        outputs = output[0]
         hidden = output[2]
         print(outputs.size())
         print(hidden.size())
