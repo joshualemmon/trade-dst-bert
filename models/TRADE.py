@@ -303,8 +303,8 @@ class EncoderBERT(nn.Module):
         # self.tokenizer = transformers.BertTokenizer(vocab_file, pad_token='PAD', unk_token='UNK', sep_token='EOS')
         # self.BERT = transformers.BertModel(self.config)
         self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased")
-        BERT = transformers.BertModel.from_pretrained("bert-base-uncased")
-        self.BERT = nn.Sequential(BERT, nn.Linear(768, 400))
+        self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased")
+        self.embed_resize = nn.Linear(768, 400)
         # self.BERT.set_input_embeddings(self.embedding)
 
     def get_state(self, bsz):
@@ -322,8 +322,10 @@ class EncoderBERT(nn.Module):
         # hidden = self.get_state(input_seqs.size(1))
         # print(input_seqs.shape)
         output = self.BERT(input_ids=input_seqs)
-        outputs = output[0]
+        outputs = self.embed_resize(output[0])
         hidden = output[2]
+        print(outputs.size())
+        print(hidden.size())
         # outputs = outputs[:,:,:self.hidden_size] + outputs[:,:,self.hidden_size:]
         return outputs.squeeze(0), hidden.unsqueeze(0)
 
