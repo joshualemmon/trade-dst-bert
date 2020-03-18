@@ -300,8 +300,6 @@ class EncoderBERT(nn.Module):
         self.config = transformers.BertConfig.from_pretrained('bert-base-uncased', output_hidden_states=True)
         self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased")
         self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased", config=self.config)
-        # self.embed_resize = nn.Linear(768, 400)
-        # self.BERT.set_input_embeddings(self.embedding)
 
     def get_state(self, bsz):
         """Get cell states and hidden states."""
@@ -312,17 +310,9 @@ class EncoderBERT(nn.Module):
 
     def forward(self, input_seqs, input_lengths, hidden=None):
         input_seqs = input_seqs.transpose(0,1)
-        # inp_ids = []
-        # for seq in input_seqs:
-        #     inp_ids.append(self.tokenizer.encode(seq))
-        # hidden = self.get_state(input_seqs.size(1))
-        # print(input_seqs.shape)
         output = self.BERT(input_ids=input_seqs)
         outputs = output[0]
         hidden = output[1]
-        print(outputs.size())
-        print(hidden.size())
-        # outputs = outputs[:,:,:self.hidden_size] + outputs[:,:,self.hidden_size:]
         return outputs.squeeze(0), hidden.unsqueeze(0)
 
 class EncoderRNN(nn.Module):
