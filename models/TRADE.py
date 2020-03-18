@@ -304,7 +304,7 @@ class EncoderBERT(nn.Module):
         # self.BERT = transformers.BertModel(self.config)
         self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased")
         self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased", config=self.config)
-        self.BERT.set_input_embeddings(self.embedding)
+        # self.BERT.set_input_embeddings(self.embedding)
 
     def get_state(self, bsz):
         """Get cell states and hidden states."""
