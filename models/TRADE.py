@@ -319,7 +319,7 @@ class EncoderBERT(nn.Module):
         output = self.BERT(inputs_embeds=embedded)
         outputs = output[0]
         hidden = output[1]
-        return outputs.squeeze(0), hidden.unsqueeze(0)
+        return outputs.transpose(0,1), hidden.unsqueeze(0)
 
 class EncoderRNN(nn.Module):
     def __init__(self, vocab_size, hidden_size, dropout, n_layers=1):
