@@ -137,6 +137,8 @@ class TRADE(nn.Module):
             story = data['context']
         # Encode dialog history
         encoded_outputs, encoded_hidden = self.encoder(story.transpose(0, 1), data['context_len'])
+        print(encoded_outputs.size())
+        print(encoded_hidden.size())
         # Get the words that can be copy from the memory
         batch_size = len(data['context_len'])
         self.copy_list = data['context_plain']
