@@ -318,7 +318,6 @@ class EncoderBERT(nn.Module):
         # hidden = self.get_state(input_seqs.size(1))
         # print(input_seqs.shape)
         output = self.BERT(input_ids=input_seqs)
-        print(output.size())
         outputs = output[0]
         hidden = output[1]
         print(outputs.size())
