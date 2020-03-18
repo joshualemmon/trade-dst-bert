@@ -137,6 +137,11 @@ class TRADE(nn.Module):
             story = data['context']
         # Encode dialog history
         encoded_outputs, encoded_hidden = self.encoder(story.transpose(0, 1), data['context_len'])
+        if args['encoder'] == 'BERT':
+            print(encoded_outputs.size())
+            print(encoded_hidden.size())
+            #change hidden state size
+        quit()
         # Get the words that can be copy from the memory
         batch_size = len(data['context_len'])
         self.copy_list = data['context_plain']
@@ -303,7 +308,8 @@ class EncoderBERT(nn.Module):
         # self.tokenizer = transformers.BertTokenizer(vocab_file, pad_token='PAD', unk_token='UNK', sep_token='EOS')
         # self.BERT = transformers.BertModel(self.config)
         self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased")
-        self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased")
+        BERT = transformers.BertModel.from_pretrained("bert-base-uncased")
+        self.BERT = nn.Sequential(BERT)
         # self.BERT.set_input_embeddings(self.embedding)
 
     def get_state(self, bsz):
@@ -322,7 +328,7 @@ class EncoderBERT(nn.Module):
         # print(input_seqs.shape)
         output = self.BERT(input_ids=input_seqs)
         outputs = output[0]
-        hidden = output[1]
+        hidden = output[2]
         # outputs = outputs[:,:,:self.hidden_size] + outputs[:,:,self.hidden_size:]
         return outputs, hidden.unsqueeze(0)
 
