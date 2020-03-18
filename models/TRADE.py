@@ -323,9 +323,7 @@ class EncoderBERT(nn.Module):
         hidden = torch.zeros_like(hidden_states[0])
         for hs in hidden_states:
             hidden += hs
-        print(hidden.squeeze(0).size())
-        print(hidden[-1,:,:].size())
-        return outputs.transpose(0,1), hidden
+        return outputs.transpose(0,1), torch.mean(hidden, 0)
 
 class EncoderRNN(nn.Module):
     def __init__(self, vocab_size, hidden_size, dropout, n_layers=1):
