@@ -81,7 +81,8 @@ model = globals()[args["decoder"]](
     lr=args["learn"], 
     dropout=args["drop"],
     slots=SLOTS_LIST,
-    gating_dict=gating_dict)
+    gating_dict=gating_dict,
+    encoder=args['encoder'])
 
 avg_best, cnt, acc = 0.0, 0, 0.0
 weights_best = deepcopy(model.state_dict())

@@ -107,7 +107,8 @@ model = globals()[args["decoder"]](
     lr=args["learn"], 
     dropout=args["drop"],
     slots=SLOTS_LIST,
-    gating_dict=gating_dict)
+    gating_dict=gating_dict,
+    encoder=args['encoder'])
 
 print("4 domains test set length used EVAL",len(test_special)*BSZ)
 print("4 domains train set length used for GEM",len(train_GEM)*64)
