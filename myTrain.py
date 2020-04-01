@@ -48,7 +48,7 @@ for epoch in range(200):
         # exit(1)
 
     if((epoch+1) % int(args['evalp']) == 0):
-        model.save_model('all-domains')
+        model.save_model('-base-all-domains')
         acc = model.evaluate(dev, avg_best, SLOTS_LIST[2], early_stop)
         model.scheduler.step(acc)
 
