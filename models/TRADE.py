@@ -41,8 +41,10 @@ class TRADE(nn.Module):
         if encoder == 'GRU':
             self.encoder = EncoderRNN(self.lang.n_words, hidden_size, self.dropout)
         elif encoder == 'BERT':
-            self.encoder = EncoderBERT(self.lang.n_words, hidden_size, self.dropout)
-            self.encoder.train(False)
+            if args["untrained_bert"]:
+                self.encoder = EncoderBERTUntrained(self.lang.n_words, hidden_size, self.dropout)
+            else:
+                self.encoder = EncoderBERT(self.lang.n_words, hidden_size, self.dropout)
         self.decoder = Generator(self.lang, self.encoder.embedding, self.lang.n_words, hidden_size, self.dropout, self.slots, self.nb_gate) 
         
         if path:
@@ -310,6 +312,40 @@ class EncoderBERT(nn.Module):
         if not args["train_encoder"]:
             self.embedding.weight.requires_grad = False
             self.training = False
+
+    def get_state(self, bsz):
+        """Get cell states and hidden states."""
+        if USE_CUDA:
+            return Variable(torch.zeros(2, bsz, self.hidden_size)).cuda()
+        else:
+            return Variable(torch.zeros(2, bsz, self.hidden_size))
+
+    def forward(self, input_seqs, input_lengths, hidden=None):
+        embedded = self.embedding(input_seqs)
+        embedded = self.dropout_layer(embedded)
+        output = self.BERT(inputs_embeds=embedded)
+        outputs = output[0]
+        hidden_states = output[2]
+        hidden = torch.zeros_like(hidden_states[0])
+        for hs in hidden_states:
+            hidden += hs
+        return outputs.transpose(0,1), torch.mean(hidden, 0).unsqueeze(0)
+
+class EncoderBERTUntrained(nn.Module):
+    def __init__(self, vocab_size, hidden_size, dropout, n_layers=1, vocab_file='./data/vocab.txt'):
+        super(EncoderBERT, self).__init__()
+        self.vocab_size = vocab_size
+        self.hidden_size = hidden_size
+        self.dropout = dropout
+        self.dropout_layer = nn.Dropout(dropout)
+        self.embedding = nn.Embedding(vocab_size, hidden_size, padding_idx=PAD_token)
+        self.embedding.weight.data.normal_(0, 0.1)
+        self.config = transformers.BertConfig(vocab_size=self.vocab_size, hidden_size=self.hidden_size, 
+                                              num_hidden_layers=n_layers, hidden_dropout_prob=dropout, attention_probs_dropout=dropout,
+                                              num_attention_heads=16, output_hidden_states=True, max_position_embeddings=1024)
+        self.tokenizer = transformers.BertTokenizer(vocab_file, pad_token='PAD', unk_token='UNK', sep_token='EOS')
+        self.BERT = transformers.BertModel(self.config)
+        self.training = True
 
     def get_state(self, bsz):
         """Get cell states and hidden states."""
