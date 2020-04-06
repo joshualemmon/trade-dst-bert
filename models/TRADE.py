@@ -42,6 +42,7 @@ class TRADE(nn.Module):
             self.encoder = EncoderRNN(self.lang.n_words, hidden_size, self.dropout)
         elif encoder == 'BERT':
             self.encoder = EncoderBERT(self.lang.n_words, hidden_size, self.dropout)
+            # self.encoder.train(False)
         self.decoder = Generator(self.lang, self.encoder.embedding, self.lang.n_words, hidden_size, self.dropout, self.slots, self.nb_gate) 
         
         if path:
@@ -212,7 +213,8 @@ class TRADE(nn.Module):
         print(evaluation_metrics)
 
         # Set back to training mode
-        self.encoder.train(True)
+        if encoder == 'GRU':
+            self.encoder.train(True)
         self.decoder.train(True)
 
         joint_acc_score = joint_acc_score_ptr # (joint_acc_score_ptr + joint_acc_score_class)/2
@@ -303,6 +305,7 @@ class EncoderBERT(nn.Module):
         self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased", bos_token="SOS", eos_token="EOS", unk_token="UNK", pad_token="PAD")
         self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased", config=self.config)
 
+        self.embedding.weight.requires_grad = False
     def get_state(self, bsz):
         """Get cell states and hidden states."""
         if USE_CUDA:
