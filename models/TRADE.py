@@ -306,7 +306,7 @@ class EncoderBERT(nn.Module):
         self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased", config=self.config)
         self.training = False
 
-        for name, param in bert.named_parameters():
+        for name, param in embedding.named_parameters():
             if name.startswith('embeddings'):
                 param.requires_grad = False
     def get_state(self, bsz):
