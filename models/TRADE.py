@@ -333,7 +333,7 @@ class EncoderBERT(nn.Module):
 
 class EncoderBERTUntrained(nn.Module):
     def __init__(self, vocab_size, hidden_size, dropout, n_layers=1, vocab_file='./data/vocab.txt'):
-        super(EncoderBERT, self).__init__()
+        super(EncoderBERTUntrained, self).__init__()
         self.vocab_size = vocab_size
         self.hidden_size = hidden_size
         self.dropout = dropout
