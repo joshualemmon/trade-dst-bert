@@ -308,7 +308,7 @@ class EncoderBERT(nn.Module):
         self.training = True
 
         if not args["train_encoder"]:
-            self.embedding.requires_grad = False
+            self.embedding.weight.requires_grad = False
             self.training = False
 
     def get_state(self, bsz):
