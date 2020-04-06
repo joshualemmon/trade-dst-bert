@@ -149,7 +149,8 @@ class TRADE(nn.Module):
 
     def evaluate(self, dev, matric_best, slot_temp, early_stop=None):
         # Set to not-training mode to disable dropout
-        self.encoder.train(False)
+        if args["train_encoder"]:
+            self.encoder.train(False)
         self.decoder.train(False)  
         print("STARTING EVALUATION")
         all_prediction = {}
@@ -213,7 +214,7 @@ class TRADE(nn.Module):
         print(evaluation_metrics)
 
         # Set back to training mode
-        if encoder == 'GRU':
+        if args["train_encoder"]:
             self.encoder.train(True)
         self.decoder.train(True)
 
@@ -304,11 +305,12 @@ class EncoderBERT(nn.Module):
         self.config = transformers.BertConfig.from_pretrained('bert-base-uncased', output_hidden_states=True)
         self.tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased", bos_token="SOS", eos_token="EOS", unk_token="UNK", pad_token="PAD")
         self.BERT = transformers.BertModel.from_pretrained("bert-base-uncased", config=self.config)
-        self.training = False
+        self.training = True
 
-        for name, param in self.embedding.named_parameters():
-            if name.startswith('embeddings'):
-                param.requires_grad = False
+        if not args["train_encoder"]:
+            self.embedding.requires_grad = False
+            self.training = False
+
     def get_state(self, bsz):
         """Get cell states and hidden states."""
         if USE_CUDA:

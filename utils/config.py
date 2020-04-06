@@ -30,6 +30,7 @@ parser.add_argument('-imbsamp','--imbalance_sampler', help='', required=False, d
 parser.add_argument('-data_ratio','--data_ratio', help='', required=False, default=100, type=int)
 parser.add_argument('-um','--unk_mask', help='mask out input token to UNK', type=int, required=False, default=1)
 parser.add_argument('-bsz','--batch', help='Batch_size', required=False, type=int)
+parser.add_argument('-tre', '--train_encoder', required=False, default=1, type=int)
 
 # Testing Setting
 parser.add_argument('-rundev','--run_dev_testing', help='', required=False, default=0, type=int)
