@@ -16,7 +16,7 @@ import json
 # import pandas as pd
 import copy
 import sys
-sys.path.add(0, './save')
+sys.path.insert(0, './save')
 
 from utils.measures import wer, moses_multi_bleu
 from utils.masked_cross_entropy import *
