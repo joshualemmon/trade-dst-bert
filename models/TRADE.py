@@ -49,6 +49,7 @@ class TRADE(nn.Module):
         self.decoder = Generator(self.lang, self.encoder.embedding, self.lang.n_words, hidden_size, self.dropout, self.slots, self.nb_gate) 
         
         if path:
+            f = open('file1.txt', 'r')
             if USE_CUDA:
                 print("MODEL {} LOADED".format(str(path)))
                 trained_encoder = torch.load(str(path)+'/enc.th')
