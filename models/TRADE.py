@@ -48,6 +48,7 @@ class TRADE(nn.Module):
         
         if path:
             if USE_CUDA:
+                print(os.getcwd())
                 print("MODEL {} LOADED".format(str(path)))
                 trained_encoder = torch.load('../'+str(path)+'/enc.th')
                 trained_decoder = torch.load('../'+str(path)+'/dec.th')
