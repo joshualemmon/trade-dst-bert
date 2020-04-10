@@ -7,11 +7,12 @@ python3 myTest.py -ds= -path= -bsz=
 directory = args['path'].split("/")
 print(directory)
 HDD = directory[2].split('HDD')[1].split('BSZ')[0]
+encoder = args['encoder']
 decoder = directory[1].split('-')[0] 
 BSZ = int(args['batch']) if args['batch'] else int(directory[2].split('BSZ')[1].split('DR')[0])
 args["decoder"] = decoder
 args["HDD"] = HDD
-print("HDD", HDD, "decoder", decoder, "BSZ", BSZ)
+print("HDD", HDD, "encoder", encoder, "decoder", decoder, "BSZ", BSZ)
 
 if args['dataset']=='multiwoz':
     from utils.utils_multiWOZ_DST import *
@@ -29,7 +30,8 @@ model = globals()[decoder](
     dropout=0,
     slots=SLOTS_LIST,
     gating_dict=gating_dict,
-    nb_train_vocab=max_word)
+    nb_train_vocab=max_word,
+    encoder=encoder)
 
 if args["run_dev_testing"]:
     print("Development Set ...")
