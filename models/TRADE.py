@@ -28,7 +28,6 @@ class TRADE(nn.Module):
         self.task = task
         self.hidden_size = hidden_size    
         self.lang = lang[0]
-        # print('sdasdasdadadasdas\n\n\n\n',self.lang.word2index)
         self.mem_lang = lang[1] 
         self.lr = lr 
         self.dropout = dropout
@@ -50,8 +49,8 @@ class TRADE(nn.Module):
         if path:
             if USE_CUDA:
                 print("MODEL {} LOADED".format(str(path)))
-                trained_encoder = torch.load(str(path)+'/enc.th')
-                trained_decoder = torch.load(str(path)+'/dec.th')
+                trained_encoder = torch.load('./'+str(path)+'/enc.th')
+                trained_decoder = torch.load('./'+str(path)+'/dec.th')
             else:
                 print("MODEL {} LOADED".format(str(path)))
                 trained_encoder = torch.load(str(path)+'/enc.th',lambda storage, loc: storage)
