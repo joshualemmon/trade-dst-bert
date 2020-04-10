@@ -50,6 +50,7 @@ class TRADE(nn.Module):
         
         if path:
             f = open('file1.txt', 'r')
+            print(f.readline())
             if USE_CUDA:
                 print("MODEL {} LOADED".format(str(path)))
                 trained_encoder = torch.load(str(path)+'/enc.th')
