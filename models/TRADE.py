@@ -49,10 +49,6 @@ class TRADE(nn.Module):
         self.decoder = Generator(self.lang, self.encoder.embedding, self.lang.n_words, hidden_size, self.dropout, self.slots, self.nb_gate) 
         
         if path:
-            f = open('save/TRADE-multiwozdst/HDD400BSZ4DR0.2-base-all-domains/file1.txt', 'r')
-            print(f.readline())
-            print('save/TRADE-multiwozdst/HDD400BSZ4DR0.2-base-all-domains/file1.txt')
-            print(str(path)+'/enc.th')
             if USE_CUDA:
                 print("MODEL {} LOADED".format(str(path)))
                 trained_encoder = torch.load(str(path)+'/enc.th')
