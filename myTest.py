@@ -4,7 +4,7 @@ from models.TRADE import *
 '''
 python3 myTest.py -ds= -path= -bsz=
 '''
-
+print(args['path'])
 directory = args['path'].split("/")
 HDD = directory[2].split('HDD')[1].split('BSZ')[0]
 decoder = directory[1].split('-')[0] 
