@@ -51,10 +51,12 @@ class TRADE(nn.Module):
         if path:
             f = open('save/TRADE-multiwozdst/HDD400BSZ4DR0.2-base-all-domains/file1.txt', 'r')
             print(f.readline())
+            print('save/TRADE-multiwozdst/HDD400BSZ4DR0.2-base-all-domains/file1.txt')
+            print(str(path)+'/enc.th')
             if USE_CUDA:
                 print("MODEL {} LOADED".format(str(path)))
-                trained_encoder = torch.load('/'+str(path)+'/enc.th')
-                trained_decoder = torch.load('/'+str(path)+'/dec.th')
+                trained_encoder = torch.load(str(path)+'/enc.th')
+                trained_decoder = torch.load(str(path)+'/dec.th')
             else:
                 print("MODEL {} LOADED".format(str(path)))
                 trained_encoder = torch.load(str(path)+'/enc.th',lambda storage, loc: storage)
