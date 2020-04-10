@@ -15,6 +15,8 @@ import os
 import json
 # import pandas as pd
 import copy
+import sys
+sys.path.add(0, './save')
 
 from utils.measures import wer, moses_multi_bleu
 from utils.masked_cross_entropy import *
@@ -49,8 +51,8 @@ class TRADE(nn.Module):
         if path:
             if USE_CUDA:
                 print("MODEL {} LOADED".format(str(path)))
-                trained_encoder = torch.load('./'+str(path)+'/enc.th')
-                trained_decoder = torch.load('./'+str(path)+'/dec.th')
+                trained_encoder = torch.load(str(path)+'/enc.th')
+                trained_decoder = torch.load(+str(path)+'/dec.th')
             else:
                 print("MODEL {} LOADED".format(str(path)))
                 trained_encoder = torch.load(str(path)+'/enc.th',lambda storage, loc: storage)
