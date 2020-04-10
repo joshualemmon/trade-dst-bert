@@ -36,7 +36,8 @@ else:
                                         lr=args["learn"], 
                                         dropout=args["drop"],
                                         slots=SLOTS_LIST,
-                                        gating_dict=gating_dict)
+                                        gating_dict=gating_dict,
+                                        encoder =args["encoder"])
     print("Computing Fisher Matrix ")
     fisher = {}
     optpar = {}
