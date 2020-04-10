@@ -41,7 +41,7 @@ class TRADE(nn.Module):
             self.encoder = EncoderRNN(self.lang.n_words, hidden_size, self.dropout)
         elif encoder == 'BERT':
             if args["untrained_bert"]:
-                self.encoder = EncoderBERTUntrained(self.lang.n_words, hidden_size, self.dropout)
+                self.encoder = UntrainedEncoderBERT(self.lang.n_words, hidden_size, self.dropout)
             else:
                 self.encoder = EncoderBERT(self.lang.n_words, hidden_size, self.dropout)
         self.decoder = Generator(self.lang, self.encoder.embedding, self.lang.n_words, hidden_size, self.dropout, self.slots, self.nb_gate) 
@@ -330,9 +330,9 @@ class EncoderBERT(nn.Module):
             hidden += hs
         return outputs.transpose(0,1), torch.mean(hidden, 0).unsqueeze(0)
 
-class EncoderBERTUntrained(nn.Module):
+class UntrainedEncoderBERT(nn.Module):
     def __init__(self, vocab_size, hidden_size, dropout, n_layers=1, vocab_file='./data/vocab.txt'):
-        super(EncoderBERTUntrained, self).__init__()
+        super(UntrainedEncoderBERT, self).__init__()
         self.vocab_size = vocab_size
         self.hidden_size = hidden_size
         self.dropout = dropout
