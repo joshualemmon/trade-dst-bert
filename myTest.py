@@ -4,8 +4,8 @@ from models.TRADE import *
 '''
 python3 myTest.py -ds= -path= -bsz=
 '''
-print(args['path'])
 directory = args['path'].split("/")
+print(directory)
 HDD = directory[2].split('HDD')[1].split('BSZ')[0]
 decoder = directory[1].split('-')[0] 
 BSZ = int(args['batch']) if args['batch'] else int(directory[2].split('BSZ')[1].split('DR')[0])
