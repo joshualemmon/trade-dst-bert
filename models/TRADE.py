@@ -49,12 +49,12 @@ class TRADE(nn.Module):
         self.decoder = Generator(self.lang, self.encoder.embedding, self.lang.n_words, hidden_size, self.dropout, self.slots, self.nb_gate) 
         
         if path:
-            f = open('save/file1.txt', 'r')
+            f = open('save/TRADE-multiwoz/file1.txt', 'r')
             print(f.readline())
             if USE_CUDA:
                 print("MODEL {} LOADED".format(str(path)))
-                trained_encoder = torch.load(str(path)+'/enc.th')
-                trained_decoder = torch.load(+str(path)+'/dec.th')
+                trained_encoder = torch.load('/'+str(path)+'/enc.th')
+                trained_decoder = torch.load('/'+str(path)+'/dec.th')
             else:
                 print("MODEL {} LOADED".format(str(path)))
                 trained_encoder = torch.load(str(path)+'/enc.th',lambda storage, loc: storage)
