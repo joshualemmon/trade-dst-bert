@@ -36,12 +36,13 @@ class TRADE(nn.Module):
         self.gating_dict = gating_dict
         self.nb_gate = len(gating_dict)
         self.cross_entorpy = nn.CrossEntropyLoss()
+        self.num_layers = args["layer"]
 
         if encoder == 'GRU':
             self.encoder = EncoderRNN(self.lang.n_words, hidden_size, self.dropout)
         elif encoder == 'BERT':
             if args["untrained_bert"]:
-                self.encoder = UntrainedEncoderBERT(self.lang.n_words, hidden_size, self.dropout)
+                self.encoder = UntrainedEncoderBERT(self.lang.n_words, hidden_size, self.dropout, n_layers=self.num_layers)
             else:
                 self.encoder = EncoderBERT(self.lang.n_words, hidden_size, self.dropout)
         self.decoder = Generator(self.lang, self.encoder.embedding, self.lang.n_words, hidden_size, self.dropout, self.slots, self.nb_gate) 
