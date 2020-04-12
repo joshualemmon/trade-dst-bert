@@ -296,9 +296,9 @@ class TRADE(nn.Module):
         return F1, recall, precision, count
 
 class EncoderBERT(nn.Module):
-    def __init__(self, vocab_size, hidden_size, dropout, n_layers=1, vocab_file='./data/vocab.txt'):
+    def __init__(self, vocab_size, hidden_size, dropout, n_layers=1, vocab_file='./data/bert-base-uncased-vocab.txt'):
         super(EncoderBERT, self).__init__()
-        self.vocab_size = vocab_size
+        self.vocab_size = 30522
         self.hidden_size = hidden_size
         self.dropout = dropout
         self.dropout_layer = nn.Dropout(dropout)
